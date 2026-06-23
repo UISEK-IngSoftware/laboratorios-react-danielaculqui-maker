@@ -2,7 +2,6 @@ import { AppBar, Button, Container, Toolbar } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
-    // Usamos un link directo a una imagen de la Pokedex en internet
     const pokedexLogo = "https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg";
 
     return (
