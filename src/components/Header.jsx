@@ -14,20 +14,9 @@ export default function Header() {
                         </div>
                     </Toolbar>
                     <Toolbar>
-                        <Button 
-                            color="inherit" 
-                            component={Link} 
-                            to="/"
-                        >
-                            Inicio
-                        </Button>
-                        <Button 
-                            color="inherit" 
-                            component={Link} 
-                            to="/add"
-                        >
-                            Agregar Pokémon
-                        </Button>
+            <Button color="inherit" href="/">Inicio</Button>
+            <Button color="inherit" href="/add">Agregar Pokémon</Button>
+            <Button color="inherit" href="/login">Iniciar sesión</Button>
                     </Toolbar>
                 </AppBar>
             </div>

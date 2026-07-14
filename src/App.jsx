@@ -1,7 +1,8 @@
 import { Container } from '@mui/material';
 import './App.css';
 import Header from './components/Header';
-import PokemonList from './components/PokemonList';
+import PokemonList from './pages/PokemonList'; 
+import LoginForm from './pages/LoginForm';
 import PokemonForm from './components/PokemonForm';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -13,6 +14,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<PokemonList />} />
                     <Route path="/add" element={<PokemonForm />} />
+                    <Route path="/login" element={<LoginForm />} /> 
                 </Routes>
             </Container>
         </BrowserRouter>
