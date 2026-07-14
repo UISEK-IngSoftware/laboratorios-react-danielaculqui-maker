@@ -10,7 +10,7 @@ function App() {
     return (
         <BrowserRouter>
             <Header />
-            <Container>
+            <Container sx={{ marginTop: 2 }}>
                 <Routes>
                     <Route path="/" element={<PokemonList />} />
                     <Route path="/add" element={<PokemonForm />} />

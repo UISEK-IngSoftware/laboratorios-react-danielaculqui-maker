@@ -22,6 +22,7 @@ export const login = async (username, password) => {
     });
 
     localStorage.setItem("access_token", response.data.access_token);
+    window.dispatchEvent(new Event("authChanged"));
     
     return response.data;
   } catch (error) {
@@ -49,4 +50,5 @@ export const logout = async () => {
     }
 
     localStorage.removeItem("access_token");
+    window.dispatchEvent(new Event("authChanged"));
 };
