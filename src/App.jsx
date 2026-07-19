@@ -1,9 +1,10 @@
 import { Container } from '@mui/material';
 import './App.css';
 import Header from './components/Header';
-import PokemonList from './pages/PokemonList'; 
+import PokemonList from './pages/PokemonList';
 import LoginForm from './pages/LoginForm';
 import PokemonForm from './components/PokemonForm';
+import PokemonDetail from './pages/PokemonDetail';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -14,7 +15,9 @@ function App() {
                 <Routes>
                     <Route path="/" element={<PokemonList />} />
                     <Route path="/add" element={<PokemonForm />} />
-                    <Route path="/login" element={<LoginForm />} /> 
+                    <Route path="/edit/:id" element={<PokemonForm />} />
+                    <Route path="/pokemon/:id" element={<PokemonDetail />} />
+                    <Route path="/login" element={<LoginForm />} />
                 </Routes>
             </Container>
         </BrowserRouter>

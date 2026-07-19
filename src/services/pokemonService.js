@@ -38,6 +38,15 @@ export const fetchPokemons = async () => {
   }
 }
 
+export const fetchPokemonById = async (id) => {
+  try {
+    const response = await apiClient.get(`/pokemons/${id}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Error obteniendo el pokemon: " + (error.response?.data?.detail || error.message));
+  }
+}
+
 export const addPokemon = async (pokemonData) => {
   let pictureBase64 = "";
   if (pokemonData.picture) {
@@ -49,5 +58,30 @@ export const addPokemon = async (pokemonData) => {
     return response.data;
   } catch (error) {
     throw new Error("Error adding pokemon: " + (error.response?.data?.detail || error.message));
+  }
+}
+
+export const updatePokemon = async (id, pokemonData) => {
+  const payload = { ...pokemonData };
+
+  if (pokemonData.picture instanceof File) {
+    payload.picture = await fileToBase64(pokemonData.picture);
+  } else {
+    delete payload.picture;
+  }
+
+  try {
+    const response = await apiClient.patch(`/pokemons/${id}/`, payload);
+    return response.data;
+  } catch (error) {
+    throw new Error("Error actualizando el pokemon: " + (error.response?.data?.detail || error.message));
+  }
+}
+
+export const deletePokemon = async (id) => {
+  try {
+    await apiClient.delete(`/pokemons/${id}/`);
+  } catch (error) {
+    throw new Error("Error eliminando el pokemon: " + (error.response?.data?.detail || error.message));
   }
 }

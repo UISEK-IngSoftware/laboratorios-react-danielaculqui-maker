@@ -1,13 +1,18 @@
 import { Box, Button, TextField, Typography, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { addPokemon } from '../services/pokemonService'
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { addPokemon, updatePokemon, fetchPokemonById } from '../services/pokemonService'
 import './PokemonForm.css'
 
 export default function PokemonForm() {
 
     const navigate = useNavigate();
+    const { id } = useParams();
+    const isEditMode = Boolean(id);
+
     const [errorMsg, setErrorMsg] = useState("");
+    const [loading, setLoading] = useState(isEditMode);
+    const [currentImage, setCurrentImage] = useState(null);
     const [pokemonData, setPokemonData] = useState({
         name: "",
         type: "",
@@ -16,6 +21,26 @@ export default function PokemonForm() {
         trainer: "",
         picture: null,
     });
+
+    useEffect(() => {
+        if (!isEditMode) return;
+
+        fetchPokemonById(id).then((data) => {
+            setPokemonData({
+                name: data.name || "",
+                type: data.type || "",
+                weight: data.weight || "",
+                height: data.height || "",
+                trainer: data.trainer ? String(data.trainer) : "",
+                picture: null, 
+            });
+            const mediaUrl = import.meta.env.VITE_MEDIA_URL;
+            setCurrentImage(data.picture ? `${mediaUrl}/${data.picture}` : null);
+        }).catch((error) => {
+            console.error("Error obteniendo el pokemon:", error);
+            setErrorMsg("No se pudo cargar el pokemon a editar.");
+        }).finally(() => setLoading(false));
+    }, [id, isEditMode]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -28,19 +53,28 @@ export default function PokemonForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        addPokemon(pokemonData).then(() => {
-            alert('Pokemon agregado exitosamente');
+
+        const action = isEditMode
+            ? updatePokemon(id, pokemonData)
+            : addPokemon(pokemonData);
+
+        action.then(() => {
+            alert(isEditMode ? 'Pokemon actualizado exitosamente' : 'Pokemon agregado exitosamente');
             navigate("/");
         }).catch((error) => {
-            console.error('Error al agregar el pokemon:', error);
-            setErrorMsg('Error al agregar el pokemon. Por favor, inténtelo de nuevo más tarde.');
+            console.error('Error al guardar el pokemon:', error);
+            setErrorMsg('Error al guardar el pokemon. Por favor, inténtelo de nuevo más tarde.');
         });
     };
+
+    if (loading) {
+        return <Typography>Cargando...</Typography>;
+    }
 
     return (
         <>
             <Typography variant="h4" gutterBottom>
-                Formulario de Pokemon
+                {isEditMode ? 'Editar Pokémon' : 'Formulario de Pokemon'}
             </Typography>
             <Box
                 component="form"
@@ -110,6 +144,13 @@ export default function PokemonForm() {
                         <MenuItem value="3">Brock</MenuItem>
                     </Select>
                 </FormControl>
+
+                {isEditMode && currentImage && !pokemonData.picture && (
+                    <Box>
+                        <Typography variant="body2" sx={{ mb: 1 }}>Imagen actual:</Typography>
+                        <img src={currentImage} alt={pokemonData.name} style={{ maxHeight: 150 }} />
+                    </Box>
+                )}
 
                 <input type="file" name="picture" accept="image/*" onChange={handleChange} />
 
