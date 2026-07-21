@@ -28,7 +28,11 @@ export default function Header() {
   return (
     <Container>
       <div className="pokedex-navbar">
-        <AppBar position="static" color="primary" elevation={4}>
+        <AppBar
+          position="static"
+          elevation={4}
+          sx={{ backgroundColor: "#CC0000" }} 
+        >
           <Toolbar
             sx={{
               flexDirection: "column",
@@ -36,7 +40,6 @@ export default function Header() {
               py: 2,
             }}
           >
-            {/* Logo */}
             <Box sx={{ mb: 2 }}>
               <img
                 src={pokedexLogo}
@@ -46,7 +49,6 @@ export default function Header() {
               />
             </Box>
 
-            {/* Botones */}
             <Box sx={{ display: "flex", gap: 2 }}>
               <Button color="inherit" component={Link} to="/">
                 Inicio

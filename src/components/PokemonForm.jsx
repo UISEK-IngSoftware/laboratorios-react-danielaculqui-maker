@@ -1,4 +1,7 @@
-import { Box, Button, TextField, Typography, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import { 
+  Box, Button, TextField, Typography, Alert, 
+  Select, MenuItem, FormControl, InputLabel 
+} from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { addPokemon, updatePokemon, fetchPokemonById } from '../services/pokemonService'
@@ -11,6 +14,7 @@ export default function PokemonForm() {
     const isEditMode = Boolean(id);
 
     const [errorMsg, setErrorMsg] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
     const [loading, setLoading] = useState(isEditMode);
     const [currentImage, setCurrentImage] = useState(null);
     const [pokemonData, setPokemonData] = useState({
@@ -31,8 +35,9 @@ export default function PokemonForm() {
                 type: data.type || "",
                 weight: data.weight || "",
                 height: data.height || "",
+                defense: data.defense || "",
                 trainer: data.trainer ? String(data.trainer) : "",
-                picture: null, 
+                picture: null,
             });
             const mediaUrl = import.meta.env.VITE_MEDIA_URL;
             setCurrentImage(data.picture ? `${mediaUrl}/${data.picture}` : null);
@@ -53,18 +58,21 @@ export default function PokemonForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMsg("");
+        setIsSuccess(false);
 
-        const action = isEditMode
-            ? updatePokemon(id, pokemonData)
-            : addPokemon(pokemonData);
-
-        action.then(() => {
-            alert(isEditMode ? 'Pokemon actualizado exitosamente' : 'Pokemon agregado exitosamente');
-            navigate("/");
-        }).catch((error) => {
+        try {
+            if (isEditMode) {
+                await updatePokemon(id, pokemonData);
+            } else {
+                await addPokemon(pokemonData);
+            }
+            setIsSuccess(true);
+            setTimeout(() => navigate("/"), 2000);
+        } catch (error) {
             console.error('Error al guardar el pokemon:', error);
-            setErrorMsg('Error al guardar el pokemon. Por favor, inténtelo de nuevo más tarde.');
-        });
+            setErrorMsg(error.message || 'Error al guardar el pokemon. Por favor, inténtelo de nuevo más tarde.');
+        }
     };
 
     if (loading) {
@@ -88,6 +96,12 @@ export default function PokemonForm() {
                 {errorMsg && (
                     <Alert severity="error">{errorMsg}</Alert>
                 )}
+                {isSuccess && (
+                    <Alert severity="success">
+                        {isEditMode ? 'Pokémon actualizado exitosamente' : 'Pokémon agregado exitosamente'}
+                    </Alert>
+                )}
+
                 <TextField
                     label="Nombre"
                     variant="outlined"
@@ -104,7 +118,7 @@ export default function PokemonForm() {
                         value={pokemonData.type}
                         onChange={handleChange}
                     >
-                        <MenuItem value="">----------</MenuItem>
+                       <MenuItem value="">----------</MenuItem>
                         <MenuItem value="A">Agua</MenuItem>
                         <MenuItem value="F">Fuego</MenuItem>
                         <MenuItem value="T">Tierra</MenuItem>
@@ -155,7 +169,7 @@ export default function PokemonForm() {
                 <input type="file" name="picture" accept="image/*" onChange={handleChange} />
 
                 <Button variant="contained" color="primary" type="submit">
-                    Guardar
+                    {isEditMode ? 'Actualizar' : 'Guardar'}
                 </Button>
             </Box>
         </>
