@@ -5,12 +5,18 @@ import {
 } from "@mui/material";
 import { fetchPokemons, deletePokemon } from "../services/pokemonService";
 import PokemonCard from "../components/PokemonCard";
+import Spinner from "../components/Spinner";
 
 export default function PokemonList() {
     const [pokemons, setPokemons] = useState([]);
+<<<<<<< HEAD
     const [errorMsg, setErrorMsg] = useState("");
     const [loading, setLoading] = useState(true);
     const [deleteTarget, setDeleteTarget] = useState(null);
+=======
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+>>>>>>> 9375c9e4b4d3539125afc7d1817adb65cca86107
 
     const loadPokemons = () => {
         setLoading(true);
@@ -19,8 +25,14 @@ export default function PokemonList() {
             setErrorMsg(""); 
             setLoading(false);
         }).catch((error) => {
+<<<<<<< HEAD
             console.error("Error obteniendo pokemons:", error);
             setErrorMsg("No se pudo cargar la lista de pokemones. Intenta nuevamente más tarde.");
+=======
+            setError("Error obteniendo pokemons. Por favor, inténtelo de nuevo más tarde.");
+            console.error("Error obteniendo pokemons:", error);
+        }).finally(() => {
+>>>>>>> 9375c9e4b4d3539125afc7d1817adb65cca86107
             setLoading(false);
         });
     };
@@ -40,6 +52,14 @@ export default function PokemonList() {
             setDeleteTarget(null);
         }
     };
+
+    if (loading) {
+        return <Spinner />;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     return (
         <Box>
