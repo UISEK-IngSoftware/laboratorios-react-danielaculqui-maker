@@ -2,16 +2,22 @@ import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import { fetchPokemons, deletePokemon } from "../services/pokemonService";
 import PokemonCard from "../components/PokemonCard";
+import Spinner from "../components/Spinner";
 
 export default function PokemonList() {
     const [pokemons, setPokemons] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const loadPokemons = () => {
+        setLoading(true);
         fetchPokemons().then((data) => {
             setPokemons(data);
         }).catch((error) => {
-            alert("Error obteniendo pokemons. Por favor, inténtelo de nuevo más tarde.");
+            setError("Error obteniendo pokemons. Por favor, inténtelo de nuevo más tarde.");
             console.error("Error obteniendo pokemons:", error);
+        }).finally(() => {
+            setLoading(false);
         });
     };
 
@@ -27,6 +33,14 @@ export default function PokemonList() {
             console.error("Error eliminando pokemon:", error);
         });
     };
+
+    if (loading) {
+        return <Spinner />;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     return (
         <Grid container spacing={2}>

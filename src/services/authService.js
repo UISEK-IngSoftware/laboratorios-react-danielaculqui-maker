@@ -40,7 +40,7 @@ export const logout = async () => {
     const token = localStorage.getItem("access_token");
 
     try {
-        await authClient.post("/remove_token", {
+        await authClient.post("revoke_token/", {
             token: token,
             client_id: CLIENT_ID,
             client_secret: CLIENT_SECRET,
